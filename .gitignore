@@ -1,1 +1,3 @@
 raygui.h
+bin/*
+src/style/*

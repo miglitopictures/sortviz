@@ -9,7 +9,7 @@
 
 #include <raylib.h>
 #define RAYGUI_IMPLEMENTATION
-#include "raygui.h"
+#include "../lib/raygui.h"
 
 
 int main(int argc, char *argv[])
@@ -28,8 +28,7 @@ int main(int argc, char *argv[])
     
     SetConfigFlags(FLAG_WINDOW_RESIZABLE); 
     InitWindow(600,600, "sortviz");
-    SetTargetFPS(60);
-    GuiLoadStyle("./style_advance.rgs");
+    GuiLoadStyle("./style/style_advance.rgs");
     
     while (!WindowShouldClose())
     {
