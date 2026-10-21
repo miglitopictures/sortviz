@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
     bool array_is_sorted = false;
     
     int MAX = 100;
-    for (int i = 0; i < SIZE; i++) my_array[i] = GetRandomValue(0, MAX);
+    for (int i = 0; i < SIZE; i++) my_array[i] = GetRandomValue(1, MAX);
     
     bool running = false;
     
@@ -43,11 +43,13 @@ int main(int argc, char *argv[])
         {
                 idx = 0;
                 iteration_count = 0;
+                comparassion_count = 0;
+                array_access_count = 0;
                 array_is_sorted = false;
 
+                for (int i = 0; i < SIZE; i++) my_array[i] = GetRandomValue(1, MAX);
+                
                 running = false;
-    
-                for (int i = 0; i < SIZE; i++) my_array[i] = GetRandomValue(0, MAX);
         }
 
         if (IsKeyPressed(KEY_X))
@@ -110,7 +112,7 @@ int main(int argc, char *argv[])
                 Color base_color = ColorFromHSV(((180 / MAX) * my_array[i]) + 180, 1, 1);
                 Color col = array_is_sorted ? base_color : ((i == idx) ? BLUE : base_color);
                 // DrawRectangle(step_x * i, screen_height- height, step_x, screen_height, col);
-                DrawRectanglePro((Rectangle){step_x * i, screen_height- height, step_x, screen_height}, (Vector2){0,0}, 0.0, col);
+                DrawRectanglePro((Rectangle){step_x * i, screen_height - height, step_x, screen_height}, (Vector2){0,0}, 0.0, col);
             }
         }
 
