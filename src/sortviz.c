@@ -14,11 +14,17 @@
 
 int main(int argc, char *argv[])
 {
+
+    float speed = 1000;
+    float frame_acc = 0;
+
     int SIZE = 16;
     if (argc > 1) sscanf(argv[1], "%d", &SIZE);
     int my_array[SIZE];
     int idx = 0;
     int iteration_count = 0;
+    int comparassion_count = 0;
+    int array_access_count = 0;
     bool array_is_sorted = false;
     
     int MAX = 100;
@@ -28,7 +34,8 @@ int main(int argc, char *argv[])
     
     SetConfigFlags(FLAG_WINDOW_RESIZABLE); 
     InitWindow(600,600, "sortviz");
-    GuiLoadStyle("./style/style_advance.rgs");
+    SetTargetFPS(60);
+    GuiLoadStyle("./assets/style_advance.rgs");
     
     while (!WindowShouldClose())
     {
@@ -37,6 +44,8 @@ int main(int argc, char *argv[])
                 idx = 0;
                 iteration_count = 0;
                 array_is_sorted = false;
+
+                running = false;
     
                 for (int i = 0; i < SIZE; i++) my_array[i] = GetRandomValue(0, MAX);
         }
@@ -46,36 +55,45 @@ int main(int argc, char *argv[])
             running = !running;
         }
         
+
         if (running)
         {
-            { // check if sorted already
-                for (int i = 0; i < SIZE - 1; i++)
-                {
-                    if (my_array[i] > my_array[i + 1])
-                    {
-                        array_is_sorted = false;
-                        break;
-                    }
-                    array_is_sorted = true;
-                }
-            }
-    
-    
-            if (!array_is_sorted)
+            while (frame_acc > 1)
             {
-                // perform a sorting step in the selected algo (bubble for now)
-                if (my_array[idx] > my_array[idx + 1])
-                {
-                    int swap_tmp = my_array[idx];
-                    my_array[idx] = my_array[idx + 1];
-                    my_array[idx + 1] = swap_tmp;
-                }
-    
-                idx = (idx + 1) % (SIZE-1);
-                iteration_count++;
-            }
+                frame_acc = frame_acc - 1;
 
+                { // check if sorted already
+                    for (int i = 0; i < SIZE - 1; i++)
+                    {
+                        if (my_array[i] > my_array[i + 1])
+                        {
+                            array_is_sorted = false;
+                            break;
+                        }
+                        array_is_sorted = true;
+                    }
+                }
+        
+        
+                if (!array_is_sorted)
+                {
+                    // perform a sorting step in the selected algo (bubble for now)
+                    if (my_array[idx] > my_array[idx + 1])
+                    {
+                        int swap_tmp = my_array[idx];
+                        my_array[idx] = my_array[idx + 1];
+                        my_array[idx + 1] = swap_tmp;
+                    }
+        
+                    idx = (idx + 1) % (SIZE-1);
+                    iteration_count++;
+                    comparassion_count += 1;
+                    array_access_count += 5;
+                }
+            }
+            frame_acc += speed * GetFrameTime();
         }
+
 
         BeginDrawing();
 
@@ -98,14 +116,23 @@ int main(int argc, char *argv[])
 
 
 
-        { // draw info
-            DrawText(TextFormat("Iterations: %d", iteration_count), 20, 20, 20, WHITE);
-            DrawText(TextFormat("%s", array_is_sorted ? "Sorted" : "Unsorted"), 20, 40, 20, WHITE);
-        }
+        { // draw interface
 
-        if (GuiButton((Rectangle) {.x = 20, .y = GetScreenHeight() - 50, .width = 100, .height = 30}, running ? "Stop" : "Run"))
-        {
-            running = !running;
+            float screen_height = GetScreenHeight();
+            float screen_width = GetScreenWidth();
+
+            DrawText(TextFormat("Iterations: %d ", iteration_count), 20, 20, 20, WHITE);
+            DrawText(TextFormat("Comparassions: %d ", comparassion_count), 20, 40, 20, WHITE);
+            DrawText(TextFormat("Array Access: %d ", array_access_count), 20, 60, 20, WHITE);
+            DrawText(TextFormat("%s", array_is_sorted ? "Sorted" : "Unsorted"), 20, 80, 20, WHITE);
+            
+            if (GuiButton((Rectangle) {.x = 20, .y = screen_height - 70, .width = 100, .height = 30}, running ? "Stop" : "Run"))
+            {
+                running = !running;
+            }
+            
+            
+            GuiSlider((Rectangle){20, screen_height - 30, screen_width - 40, 10}, "", "", &speed, 1, 6000);
         }
 
         EndDrawing();
