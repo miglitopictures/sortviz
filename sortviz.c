@@ -1,0 +1,99 @@
+// A simple program, loosely remaking 'The Sound of Sorting - "Audibilization" and Visualization of Sorting Algorithms' by Timo Bingmann, with Raylib.
+// handmade to help me study and vizualize sorting algorithms, a major topic in the third semester of my graduation (ADS) at Cesar School.
+
+// by Miguel Duarte de Barros
+
+#include <raylib.h>
+#include <stdbool.h>
+#include <stdarg.h>
+#include <stdio.h>
+
+int main(int argc, char *argv[])
+{
+    int SIZE = 8;
+    if (argc > 1) sscanf(argv[1], "%d", &SIZE);
+    int my_array[SIZE];
+    int idx = 0;
+    int iteration_count = 0;
+    bool array_is_sorted = false;
+
+    int MAX = 100;
+    for (int i = 0; i < SIZE; i++) my_array[i] = GetRandomValue(0, MAX);
+
+    
+    InitWindow(600,600, "sortviz");
+    
+    while (!WindowShouldClose())
+    {
+        if (IsKeyPressed(KEY_R))
+        {
+                idx = 0;
+                iteration_count = 0;
+                array_is_sorted = false;
+    
+                for (int i = 0; i < SIZE; i++) my_array[i] = GetRandomValue(0, MAX);
+        }
+
+        if (IsKeyDown(KEY_X))
+        {
+            { // check if sorted already
+                for (int i = 0; i < SIZE - 1; i++)
+                {
+                    if (my_array[i] > my_array[i + 1])
+                    {
+                        array_is_sorted = false;
+                        break;
+                    }
+                    array_is_sorted = true;
+                }
+            }
+
+
+            if (!array_is_sorted)
+            {
+                // perform a sorting step in the selected algo (bubble for now)
+                if (my_array[idx] > my_array[idx + 1])
+                {
+                    int swap_tmp = my_array[idx];
+                    my_array[idx] = my_array[idx + 1];
+                    my_array[idx + 1] = swap_tmp;
+                }
+    
+                idx = (idx + 1) % (SIZE-1);
+                iteration_count++;
+            }
+        }
+
+        BeginDrawing();
+
+        ClearBackground(BLACK);
+
+
+        { // draw array
+            int step_x = GetScreenWidth() / SIZE;
+            int screen_height = GetScreenHeight();
+
+            for (int i = 0; i < SIZE; i++)
+            {
+                int height = (screen_height / MAX) * my_array[i];
+                Color base_color = ColorFromHSV(((180 / MAX) * my_array[i]) + 180, 1, 1);
+                Color col = array_is_sorted ? base_color : ((i == idx) ? BLUE : base_color);
+                DrawRectangle(step_x * i, screen_height- height, step_x, screen_height, col);
+            }
+        }
+
+
+
+        { // draw info
+            DrawText(TextFormat("Iterations: %d", iteration_count), 20, 20, 20, WHITE);
+            DrawText(TextFormat("%s", array_is_sorted ? "Sorted" : "Unsorted"), 20, 40, 20, WHITE);
+        }
+
+
+        EndDrawing();
+    }
+
+    CloseWindow();
+    
+    return 0;
+}
