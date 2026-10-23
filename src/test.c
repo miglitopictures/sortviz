@@ -1,6 +1,9 @@
+// a simple testing program for thinking about sorting
+
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdarg.h>
 #include <time.h>
 
 void start_timer(clock_t *start) {
@@ -25,12 +28,9 @@ void swap(int a, int b, int *arr) {
 }
 
 Stats bubble_sort_v1(int *arr, int size) {
-    
+
     Stats stats = {0}; // for benchmarking only
-
-    clock_t timer;
-    start_timer(&timer);
-
+    
     for (int i = 0; i < size - 1; i++)
     {
         for (int j = 0; j < size - 1; j++)
@@ -44,8 +44,6 @@ Stats bubble_sort_v1(int *arr, int size) {
         }
     }
 
-    stats.time_elapsed = end_timer(timer);
-
     return stats;
 
 }
@@ -53,9 +51,6 @@ Stats bubble_sort_v1(int *arr, int size) {
 Stats bubble_sort_v2(int *arr, int size) {
 
     Stats stats = {0}; // for benchmarking only
-
-    clock_t timer;
-    start_timer(&timer);
 
     for (int i = 1; i < size; i++)
     {
@@ -70,8 +65,6 @@ Stats bubble_sort_v2(int *arr, int size) {
         }
     }
 
-    stats.time_elapsed = end_timer(timer);
-
     return stats;
 
 }
@@ -79,9 +72,6 @@ Stats bubble_sort_v2(int *arr, int size) {
 Stats bubble_sort_v3(int *arr, int size) {
     
     Stats stats = {0}; // for benchmarking only
-
-    clock_t timer;
-    start_timer(&timer);
 
     bool sorted = false;
     int i = 1;
@@ -103,8 +93,6 @@ Stats bubble_sort_v3(int *arr, int size) {
         i++;
     }
 
-    stats.time_elapsed = end_timer(timer);
-
     return stats;
 
 }
@@ -112,9 +100,6 @@ Stats bubble_sort_v3(int *arr, int size) {
 Stats selection_sort(int *arr, int size) {
     
     Stats stats = {0}; // for benchmarking only
-
-    clock_t timer;
-    start_timer(&timer);
 
     for (int i = 0; i < size - 1; i++)
     {
@@ -134,8 +119,6 @@ Stats selection_sort(int *arr, int size) {
         }
     }
 
-    stats.time_elapsed = end_timer(timer);
-
     return stats;
 
 }
@@ -153,42 +136,43 @@ void print_algo_stats(char *name, Stats stats) {
     printf("%-26s | comparassions: %-7d |swaps: %-7d | ticks: %-7.0f\n", name, stats.comparasion_count, stats.swap_count, stats.time_elapsed);
 }
 
-int main() {
+
+void bench_sort(Stats (*func)(int *arr, int size), int *base_array, int count, char *message) {
+    Stats stats = {0}; // for benchmarking only
+    clock_t timer;
+    
+    int array[count];
+    for (int i = 0; i < count; i++)
+    {
+        array[i] = base_array[i];
+    }
+    
+    start_timer(&timer);
+    stats = func(array, count);
+    stats.time_elapsed = end_timer(timer);
+
+    print_algo_stats(message, stats);
+}
+
+int main(int argc, char *argv[]) {
     srand(1); // fixed seed for now
 
 
     int SIZE = 1200;
-    int arrA[SIZE], arrB[SIZE], arrC[SIZE], arrD[SIZE];
+    if (argc > 1) {
+        sscanf(argv[1], "%d", &SIZE);
+    }
+    printf("========================== sorting a %d element array ==========================\n", SIZE);
 
+    int array[SIZE];
     for (int i = 0; i < SIZE; i++)
     {
         int random_value = rand() % (SIZE*2);
-        arrA[i] = random_value;
-        arrB[i] = random_value;
-        arrC[i] = random_value;
-        arrD[i] = random_value;
+        array[i] = random_value;
     }
 
-    // print_array("a", arrA, SIZE);
-    // print_array("b", arrB, SIZE);
-    // print_array("c", arrC, SIZE);
-    // print_array("d", arrD, SIZE);
-    
-    Stats stats_a, stats_b, stats_c, stats_d;
-
-    stats_a = bubble_sort_v1(arrA, SIZE);
-    stats_b = bubble_sort_v2(arrB, SIZE);
-    stats_c = bubble_sort_v3(arrC, SIZE);
-    stats_d = selection_sort(arrD, SIZE);
-
-    printf("============---=========== sorting a %d element array ==========================\n", SIZE);
-    print_algo_stats("bubble sort (naive)", stats_a);
-    print_algo_stats("bubble sort (check up-to)", stats_b);
-    print_algo_stats("bubble sort (early stop)", stats_c);
-    print_algo_stats("selection sort", stats_d);
-
-    // print_array("a", arrA, SIZE);
-    // print_array("b", arrB, SIZE);
-    // print_array("c", arrC, SIZE);
-    // print_array("d", arrD, SIZE);
+    bench_sort(bubble_sort_v1, array, SIZE, "bubble sort (naive)");
+    bench_sort(bubble_sort_v2, array, SIZE, "bubble sort (check up-to)");
+    bench_sort(bubble_sort_v3, array, SIZE, "bubble sort (early stop)");
+    bench_sort(selection_sort, array, SIZE, "selection sort");
 }
