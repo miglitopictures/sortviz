@@ -7,10 +7,41 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+
 #include <raylib.h>
 #define RAYGUI_IMPLEMENTATION
 #include "../lib/raygui.h"
 
+
+void swap(int a, int b, int *arr) {
+    int temp = arr[a];
+    arr[a] = arr[b];
+    arr[b] = temp;
+}
+
+
+void bubble_sort(int *arr, int size)
+{
+    for (int i = 1; i < size; i++)
+    {
+        for (int j = 0; j < size - i; j++)
+        {
+            if (arr[j] > arr[j+1])
+            {
+                swap(j,j+1, arr);
+            }
+        }
+    }
+}
+
+void sort_step(int *arr, int size, int *i) {
+    if (arr[*i] > arr[*i + 1])
+    {
+        swap(*i, *i + 1, arr);
+    }
+
+    *i = (*i + 1) % (size-1);
+}
 
 int main(int argc, char *argv[])
 {
@@ -18,17 +49,19 @@ int main(int argc, char *argv[])
     float speed = 1000;
     float frame_acc = 0;
 
-    int SIZE = 16;
-    if (argc > 1) sscanf(argv[1], "%d", &SIZE);
-    int my_array[SIZE];
+    int ARRAY_SIZE = 16;
+    if (argc > 1) sscanf(argv[1], "%d", &ARRAY_SIZE);
+    int my_array[ARRAY_SIZE];
+
     int idx = 0;
+    bool array_is_sorted = false;
+    
     int iteration_count = 0;
     int comparassion_count = 0;
     int array_access_count = 0;
-    bool array_is_sorted = false;
     
     int MAX = 100;
-    for (int i = 0; i < SIZE; i++) my_array[i] = GetRandomValue(1, MAX);
+    for (int i = 0; i < ARRAY_SIZE; i++) my_array[i] = GetRandomValue(1, MAX);
     
     bool running = false;
     
@@ -47,7 +80,7 @@ int main(int argc, char *argv[])
                 array_access_count = 0;
                 array_is_sorted = false;
 
-                for (int i = 0; i < SIZE; i++) my_array[i] = GetRandomValue(1, MAX);
+                for (int i = 0; i < ARRAY_SIZE; i++) my_array[i] = GetRandomValue(1, MAX);
                 
                 running = false;
         }
@@ -65,7 +98,7 @@ int main(int argc, char *argv[])
                 frame_acc = frame_acc - 1;
 
                 { // check if sorted already
-                    for (int i = 0; i < SIZE - 1; i++)
+                    for (int i = 0; i < ARRAY_SIZE - 1; i++)
                     {
                         if (my_array[i] > my_array[i + 1])
                         {
@@ -80,15 +113,9 @@ int main(int argc, char *argv[])
                 if (!array_is_sorted)
                 {
                     // perform a sorting step in the selected algo (bubble for now)
-                    if (my_array[idx] > my_array[idx + 1])
-                    {
-                        int swap_tmp = my_array[idx];
-                        my_array[idx] = my_array[idx + 1];
-                        my_array[idx + 1] = swap_tmp;
-                    }
+                    sort_step(my_array, ARRAY_SIZE, &idx);
         
-                    idx = (idx + 1) % (SIZE-1);
-                    iteration_count++;
+                    iteration_count    += 1;
                     comparassion_count += 1;
                     array_access_count += 5;
                 }
@@ -103,10 +130,10 @@ int main(int argc, char *argv[])
 
 
         { // draw array
-            float step_x = (float) GetScreenWidth() / SIZE;
+            float step_x = (float) GetScreenWidth() / ARRAY_SIZE;
             float screen_height = GetScreenHeight();
 
-            for (int i = 0; i < SIZE; i++)
+            for (int i = 0; i < ARRAY_SIZE; i++)
             {
                 float height = (screen_height / MAX) * my_array[i];
                 Color base_color = ColorFromHSV(((180 / MAX) * my_array[i]) + 180, 1, 1);
