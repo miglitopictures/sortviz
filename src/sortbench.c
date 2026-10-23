@@ -24,7 +24,7 @@ double end_timer(clock_t start) {
 
 // bencharking data we are tracking
 typedef struct Stats {
-    int comparasion_count;
+    long long int comparasion_count;
     int swap_count;
     double time_elapsed;
 } Stats;
@@ -149,9 +149,9 @@ void print_array(char *message, int *arr, int size) {
 // print a line for the benchmarking table
 void print_algo_stats(char *name, Stats stats) {
     printf("%-26s | ", name);
-    printf("%s: %-8d | ", "comparassions", stats.comparasion_count);
-    printf("%s: %-8d | ", "swaps", stats.swap_count);
-    printf("%s: %-8.0f" , "ticks", stats.time_elapsed);
+    printf("%s: %-9lld | ", "comparassions", stats.comparasion_count);
+    printf("%s: %-9d | ", "swaps", stats.swap_count);
+    printf("%s: %-9.0f" , "ticks", stats.time_elapsed);
     printf("\n");
 }
 
@@ -181,7 +181,7 @@ void bench_sort(Stats (*func)(int *arr, int size), int *base_array, int count, c
 
 
 int main(int argc, char *argv[]) {
-    srand(time(0));
+    srand(0); // time(0)
 
     // set default test array size to 1200, unless given as an argument
     int SIZE = 1200;
