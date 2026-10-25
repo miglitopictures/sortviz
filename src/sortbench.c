@@ -136,8 +136,32 @@ Stats selection_sort(int *arr, int size) {
     return stats;
 
 }
-/*
-Stats insertion_sort(int *arr, int size) {
+
+// Stats insertion_sort_v2(int *arr, int size) {
+    
+//     Stats stats = {0};
+
+//     for (int i = 1; i < size; i++)
+//     {
+//         for (int j = i; j > 0; j--) {
+//             stats.comparasion_count += 1;
+//             if (arr[j-1] > arr[j])
+//             {
+//                 swap(j-1, j, arr);
+//                 stats.swap_count += 1;
+//             }
+//             else
+//             {
+//                 break;
+//             }
+            
+//         }
+//     }
+
+//     return stats;
+// }
+
+Stats insertion_sort_v1(int *arr, int size) {
     
     Stats stats = {0};
 
@@ -160,31 +184,52 @@ Stats insertion_sort(int *arr, int size) {
 
     return stats;
 }
-*/
 
-Stats insertion_sort(int *arr, int size) {
-    
+Stats insertion_sort_v2(int *arr, int size) {
     Stats stats = {0};
 
-    for (int i = 1; i < size; i++)
-    {
-        for (int j = i; j > 0; j--) {
-            stats.comparasion_count += 1;
-            if (arr[j-1] > arr[j])
-            {
-                swap(j-1, j, arr);
-                stats.swap_count += 1;
-            }
-            else
-            {
-                break;
-            }
-            
+    for (int i = 1; i < size; i++) {
+        int current = arr[i];
+
+        int j = i-1;
+
+        while (j >= 0 && arr[j] > arr[j+1]) {
+            arr[j+1] = arr[j];
+            stats.comparasion_count++;
+            stats.swap_count++;
+            j--;
         }
+
+        arr[j+1] = current;
     }
 
     return stats;
 }
+
+// Stats insertion_sort_v2(int *arr, int size) {
+//     Stats stats = {0};
+
+//     for (int i = 1; i < size; i++) {
+//         int current = arr[i];
+
+//         int j = i-1;
+
+//         while (j >= 0) {
+//             if (arr[j] > arr[j+1]) {
+//                 arr[j+1] = arr[j];
+//                 stats.comparasion_count++;
+//                 stats.swap_count++;
+//                 j--;
+//             } else {
+//                 break;
+//             }
+//         }
+
+//         arr[j+1] = current;
+//     }
+
+//     return stats;
+// }
 
 // prints an array 'arr' with a starting 'message', given its 'size'. 
 void print_array(char *message, int *arr, int size) {
@@ -254,5 +299,6 @@ int main(int argc, char *argv[]) {
     bench_sort(bubble_sort_v2, array, SIZE, "bubble sort (check up-to)");
     bench_sort(bubble_sort_v3, array, SIZE, "bubble sort (early stop)");
     bench_sort(selection_sort, array, SIZE, "selection sort");
-    bench_sort(insertion_sort, array, SIZE, "insertion sort");
+    bench_sort(insertion_sort_v1, array, SIZE, "insertion sort (v1)");
+    bench_sort(insertion_sort_v2, array, SIZE, "insertion sort (v2)");
 }
