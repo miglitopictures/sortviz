@@ -136,6 +136,55 @@ Stats selection_sort(int *arr, int size) {
     return stats;
 
 }
+/*
+Stats insertion_sort(int *arr, int size) {
+    
+    Stats stats = {0};
+
+    for (int i = 1; i < size; i++)
+    {
+        for (int j = i; j > 0; j--) {
+            stats.comparasion_count += 1;
+            if (arr[j-1] > arr[j])
+            {
+                swap(j-1, j, arr);
+                stats.swap_count += 1;
+            }
+            else
+            {
+                break;
+            }
+            
+        }
+    }
+
+    return stats;
+}
+*/
+
+Stats insertion_sort(int *arr, int size) {
+    
+    Stats stats = {0};
+
+    for (int i = 1; i < size; i++)
+    {
+        for (int j = i; j > 0; j--) {
+            stats.comparasion_count += 1;
+            if (arr[j-1] > arr[j])
+            {
+                swap(j-1, j, arr);
+                stats.swap_count += 1;
+            }
+            else
+            {
+                break;
+            }
+            
+        }
+    }
+
+    return stats;
+}
 
 // prints an array 'arr' with a starting 'message', given its 'size'. 
 void print_array(char *message, int *arr, int size) {
@@ -157,7 +206,7 @@ void print_algo_stats(char *name, Stats stats) {
 
 
 //  tests a simple sorting function given its function pointer 'func',
-// 'base_array' will e copied for testing
+// 'base_array' will be copied for testing
 // 'count' is the size of base_array
 // 'message' is the string that will appear in the formatted printing
 // example of the output:
@@ -205,4 +254,5 @@ int main(int argc, char *argv[]) {
     bench_sort(bubble_sort_v2, array, SIZE, "bubble sort (check up-to)");
     bench_sort(bubble_sort_v3, array, SIZE, "bubble sort (early stop)");
     bench_sort(selection_sort, array, SIZE, "selection sort");
+    bench_sort(insertion_sort, array, SIZE, "insertion sort");
 }

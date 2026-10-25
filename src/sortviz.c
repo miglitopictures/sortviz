@@ -161,7 +161,7 @@ int main(int argc, char *argv[])
             }
             
             
-            GuiSlider((Rectangle){20, screen_height - 30, screen_width - 40, 10}, "", "", &speed, 1, 6000);
+            GuiSlider((Rectangle){20, screen_height - 30, screen_width - 40, 10}, "", "", &speed, 1, 24000);
         }
 
         EndDrawing();
@@ -171,3 +171,4 @@ int main(int argc, char *argv[])
     
     return 0;
 }
+
