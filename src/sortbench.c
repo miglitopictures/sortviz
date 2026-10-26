@@ -207,7 +207,7 @@ Stats insertion_sort_v2(int *arr, int size) {
 
         int j = i-1;
 
-        while (j >= 0 && arr[j] > arr[j+1]) {
+        while (j >= 0 && arr[j] > current) {
             arr[j+1] = arr[j];
             stats.comparasion_count++;
             stats.swap_count++;
@@ -219,32 +219,6 @@ Stats insertion_sort_v2(int *arr, int size) {
 
     return stats;
 }
-
-// Stats insertion_sort_v2(int *arr, int size) {
-//     Stats stats = {0};
-
-//     for (int i = 1; i < size; i++) {
-//         int current = arr[i];
-
-//         int j = i-1;
-
-//         while (j >= 0) {
-//             if (arr[j] > arr[j+1]) {
-//                 arr[j+1] = arr[j];
-//                 stats.comparasion_count++;
-//                 stats.swap_count++;
-//                 j--;
-//             } else {
-//                 break;
-//             }
-//         }
-
-//         arr[j+1] = current;
-//     }
-
-//     return stats;
-// }
-
 
 Stats shell_sort_v1(int *arr, int n) {
 
