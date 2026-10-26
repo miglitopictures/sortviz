@@ -36,6 +36,20 @@ void swap(int idx_a, int idx_b, int *arr) {
     arr[idx_b] = temp;
 }
 
+
+// checks if an array is sorted, returns false as soon as it fails
+bool is_sorted(int *arr, int n) {
+    for (int i = 0; i < n-1; i++)
+    {
+        if (arr[i] > arr[i+1])
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 // sorting algos //
 
 // classic academic version of a simple bubble sort.
@@ -231,6 +245,33 @@ Stats insertion_sort_v2(int *arr, int size) {
 //     return stats;
 // }
 
+
+Stats shell_sort_v1(int *arr, int n) {
+
+    Stats stats = {0};
+
+    for (int gap = n/2; gap > 0; gap = gap / 2) {
+        
+        for (int i = gap; i < n; i++) {
+            int current = arr[i];
+            int j = i - gap;
+
+            while (j >= 0 && arr[j] > current) {
+                stats.comparasion_count++;
+                stats.swap_count++;
+                arr[j + gap] = arr[j];
+                j = j - gap;
+            }
+
+            arr[j+gap] = current;
+
+        }
+    }
+
+
+    return stats;
+}
+
 // prints an array 'arr' with a starting 'message', given its 'size'. 
 void print_array(char *message, int *arr, int size) {
     printf("%s > ", message);
@@ -270,7 +311,15 @@ void bench_sort(Stats (*func)(int *arr, int size), int *base_array, int count, c
     stats.time_elapsed = end_timer(timer);
 
     // print the stats for the algorithm
-    print_algo_stats(message, stats);
+    if (is_sorted(array, count))
+    {
+        print_algo_stats(message, stats);
+    }
+    else
+    {
+        printf("%s has not worked xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n", message);
+    }
+    
 }
 
 
@@ -301,4 +350,5 @@ int main(int argc, char *argv[]) {
     bench_sort(selection_sort, array, SIZE, "selection sort");
     bench_sort(insertion_sort_v1, array, SIZE, "insertion sort (v1)");
     bench_sort(insertion_sort_v2, array, SIZE, "insertion sort (v2)");
+    bench_sort(shell_sort_v1, array, SIZE, "shell sort (v1)");
 }
