@@ -29,7 +29,7 @@ typedef struct Stats {
     double time_elapsed;
 } Stats;
 
-// swaps two values in a array.
+// swaps two values in an array.
 void swap(int idx_a, int idx_b, int *arr) {
     int temp = arr[idx_a];
     arr[idx_a] = arr[idx_b];
@@ -151,30 +151,6 @@ Stats selection_sort(int *arr, int size) {
 
 }
 
-// Stats insertion_sort_v2(int *arr, int size) {
-    
-//     Stats stats = {0};
-
-//     for (int i = 1; i < size; i++)
-//     {
-//         for (int j = i; j > 0; j--) {
-//             stats.comparasion_count += 1;
-//             if (arr[j-1] > arr[j])
-//             {
-//                 swap(j-1, j, arr);
-//                 stats.swap_count += 1;
-//             }
-//             else
-//             {
-//                 break;
-//             }
-            
-//         }
-//     }
-
-//     return stats;
-// }
-
 Stats insertion_sort_v1(int *arr, int size) {
     
     Stats stats = {0};
@@ -245,6 +221,63 @@ Stats shell_sort_v1(int *arr, int n) {
 
     return stats;
 }
+
+
+Stats quick_sort(int *arr, int low, int high) {
+    Stats stats = {0};
+
+    if (low < high) {
+        // step 1: escolhemos o pivo; (ignorando esse problema por enquanto, pegamos o ultimo item)
+        int pivot = arr[high];
+    
+        // step 2: particionamos usando o metodo de Hoare;
+        int i = low - 1, j = high;
+        while(1) {
+            // procuramos um valor maior
+            // que o pivo na esqueda 
+            do {
+                i++;
+                stats.comparasion_count++;
+            } while (arr[i] < pivot);
+            stats.comparasion_count--;
+
+            // e um valor MENOR
+            // que o pivo na direita 
+            do {
+                j--;
+                stats.comparasion_count++;
+            } while (arr[j] > pivot);
+            stats.comparasion_count--;
+            
+            
+            if (i >= j) break; // se ja verificamos todos os valores, podemos sair do loop e fazer o ultimo swap
+    
+            swap(i,j,arr); // trocamos  e passamos pra proxima iteracao
+            stats.swap_count++;
+            
+        }
+        
+        // passo 3: pivô na posição final (i é o index novo do pivo)
+        swap(i, high, arr);
+        stats.swap_count++;
+        
+        Stats stats_left = quick_sort(arr, low, i-1);
+        Stats stats_right = quick_sort(arr, i+1, high);
+
+        stats.comparasion_count += stats_left.comparasion_count;
+        stats.comparasion_count += stats_right.comparasion_count;
+        stats.swap_count += stats_left.swap_count;
+        stats.swap_count += stats_right.swap_count;
+    }
+
+    return stats;
+}
+
+Stats quick_sort_v1(int *arr, int size) {
+    return quick_sort(arr, 0, size-1);
+}
+
+
 
 // prints an array 'arr' with a starting 'message', given its 'size'. 
 void print_array(char *message, int *arr, int size) {
@@ -318,11 +351,12 @@ int main(int argc, char *argv[]) {
     printf("=========================== sorting a %d element array ===========================\n", SIZE);
 
     // test and print stats for each sorting algo
-    bench_sort(bubble_sort_v1, array, SIZE, "bubble sort (naive)");
-    bench_sort(bubble_sort_v2, array, SIZE, "bubble sort (check up-to)");
-    bench_sort(bubble_sort_v3, array, SIZE, "bubble sort (early stop)");
-    bench_sort(selection_sort, array, SIZE, "selection sort");
+    bench_sort(bubble_sort_v1,    array, SIZE, "bubble sort (naive)");
+    bench_sort(bubble_sort_v2,    array, SIZE, "bubble sort (check up-to)");
+    bench_sort(bubble_sort_v3,    array, SIZE, "bubble sort (early stop)");
+    bench_sort(selection_sort,    array, SIZE, "selection sort");
     bench_sort(insertion_sort_v1, array, SIZE, "insertion sort (v1)");
     bench_sort(insertion_sort_v2, array, SIZE, "insertion sort (v2)");
-    bench_sort(shell_sort_v1, array, SIZE, "shell sort (v1)");
+    bench_sort(shell_sort_v1,     array, SIZE, "shell sort (v1)");
+    bench_sort(quick_sort_v1,     array, SIZE, "quick sort (v1)");
 }
